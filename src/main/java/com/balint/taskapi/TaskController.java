@@ -39,10 +39,7 @@ public class TaskController {
                 }
                 return ResponseEntity.notFound().build();
         }
-    @GetMapping("/gym")
-    public String gym(){
-        return "Training beginnt um 18 Uhr";
-        }
+
     @PostMapping("/tasks")
     public ResponseEntity<Task> addTask(@RequestBody Task task){
         if(task == null){
