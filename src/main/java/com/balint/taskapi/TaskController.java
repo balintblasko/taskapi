@@ -1,5 +1,7 @@
 package com.balint.taskapi;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
@@ -30,10 +32,10 @@ public class TaskController {
     }
 
     @GetMapping("/tasks/{id}")
-        public ResponseEntity<Task> getTaskById(@PathVariable int id) {
-            Task task = taskService.getTaskById(id);
-                if(task != null){
-                    return ResponseEntity.ok(task);
+        public ResponseEntity<Task> getTaskById(@PathVariable Integer id) {
+            Optional<Task> task = taskService.getTaskById(id);
+                if(task.isPresent()){
+                    return ResponseEntity.ok(task.get());
                 }
                 return ResponseEntity.notFound().build();
         }
@@ -54,18 +56,18 @@ public class TaskController {
         return ResponseEntity.ok(createdTask);
     }
     @DeleteMapping("/tasks/{id}")
-    public ResponseEntity<Task> deleteTask(@PathVariable int id){
-        Task deletedTask = taskService.deleteTask(id);
-        if(deletedTask != null){
-            return ResponseEntity.ok(deletedTask);
+    public ResponseEntity<Task> deleteTask(@PathVariable Integer id){
+        Optional<Task> deletedTask = taskService.deleteTask(id);
+        if(deletedTask.isPresent()){
+            return ResponseEntity.ok(deletedTask.get());
         }
         return ResponseEntity.notFound().build();
     }
     @PutMapping("/tasks/{id}")
-    public ResponseEntity<Task> updateTask(@PathVariable int id, @RequestBody Task updatedTask){
-        Task task = taskService.updateTask(id, updatedTask);
-        if(task != null){
-            return ResponseEntity.ok(task);
+    public ResponseEntity<Task> updateTask(@PathVariable Integer id, @RequestBody Task updatedTask){
+        Optional<Task> task = taskService.updateTask(id, updatedTask);
+        if(task.isPresent()){
+            return ResponseEntity.ok(task.get());
         }
         
         return ResponseEntity.notFound().build();

@@ -2,63 +2,54 @@ package com.balint.taskapi;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
+
 import org.springframework.stereotype.Service;
 
 @Service
 public class TaskService {
 
-    List<Task> tasks = new ArrayList<>();
-    int nextId = 3;
+    private final TaskRepository taskRepository;
 
-    public TaskService() {
-        tasks.add(new Task(1, "Mathe lernen", false));
-        tasks.add(new Task(2, "Programmieren lernen", false));
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
     }
 
     public List<Task> getTasks(){
-        return tasks;
+        return taskRepository.findAll();
     }
-    public Task getTaskById(int id) {
-        for(Task t : tasks){
-            if(t.getId() == id){
-            return t;
-            }
-        }
-        return null;
+    public Optional<Task> getTaskById(Integer id) {
+            return taskRepository.findById(id);
     }
     public Task addTask(Task task){
          if(task.getTitle() == null || task.getTitle().isBlank()){
             return null;
             }
-
-            task.setId(nextId);
-            nextId++;
-            tasks.add(task);
-            return task;
+            return taskRepository.save(task);
     }
-    public Task deleteTask(int id){
-        for(int i = 0; i < tasks.size(); i++){
-            if(tasks.get(i).getId() == id){
-                Task deletedTask = tasks.get(i);
-                tasks.remove(i);
-                return deletedTask;
+    public Optional<Task> deleteTask(Integer id){
+        Optional<Task> deletedTask = taskRepository.findById(id);
+        if(deletedTask.isPresent()){
+                taskRepository.deleteById(id);
             }
-        }
-        return null;
+            return deletedTask;
     }
-    public Task updateTask(int id, Task updatedTask){
+    public Optional<Task> updateTask(Integer id, Task updatedTask){
         if(updatedTask == null || updatedTask.getTitle() == null || updatedTask.getTitle().isBlank()){
-                return null;
-            }
-        for(int i = 0; i < tasks.size(); i++){
-            Task t = tasks.get(i);
-            if(tasks.get(i).getId() == id){
-                t.setTitle(updatedTask.getTitle());
-                t.setDone(updatedTask.getDone());
-                return t;
-            }
-            
+            return Optional.empty();
         }
-        return null;
+
+        Optional<Task> existingTask = taskRepository.findById(id);
+
+        if(existingTask.isPresent()){
+            Task task = existingTask.get();
+            task.setTitle(updatedTask.getTitle());
+            task.setDone(updatedTask.getDone());
+
+            Task savedTask = taskRepository.save(task);
+            return Optional.of(savedTask);
+        }
+
+        return Optional.empty();
     }
 }

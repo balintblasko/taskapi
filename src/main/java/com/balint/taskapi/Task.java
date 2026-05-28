@@ -1,20 +1,27 @@
 package com.balint.taskapi;
+import jakarta.persistence.Entity;
+import jakarta.persistence.Id;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
 
+@Entity
 public class Task {
 
-    private int id;
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer id;
     private String title;
     private boolean done;
 
-    public Task(int id, String title, boolean done) {
+    public Task(Integer id, String title, boolean done) {
         this.id = id;
         this.title = title;
         this.done = done;
     }
     public Task(){
-        
+
     }
-    public int getId(){
+    public Integer getId(){
         return id;
     }
     public String getTitle(){
@@ -23,7 +30,7 @@ public class Task {
     public boolean getDone(){
         return done;
     }
-    public void setId(int id){
+    public void setId(Integer id){
         this.id = id;
     }
     public void setTitle(String title){
